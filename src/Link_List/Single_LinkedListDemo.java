@@ -47,6 +47,7 @@ public class Single_LinkedListDemo {
         System.out.println("*****************************************");
         //删除一个节点
         singleLinkedList.delete(1);
+        singleLinkedList.delete(5);
         singleLinkedList.list();
 
     }
@@ -187,7 +188,7 @@ class SingleLinkedList {
             //可以删除
             temp.next = temp.next.next;
         } else {
-            System.out.printf("要删除的%d\n", no);
+            System.out.printf("没有找到要删除的%d\n", no);
 
         }
 
