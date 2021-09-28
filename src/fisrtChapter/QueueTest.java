@@ -68,7 +68,7 @@ public class QueueTest {
                 default:
                     break;
             }
-        }
+        }//
         System.out.println("程序退出成功");
 
     }
