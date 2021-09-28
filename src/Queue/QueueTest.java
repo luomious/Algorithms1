@@ -1,17 +1,24 @@
-package fisrtChapter;
+package Queue;
 
 import java.util.Scanner;
 
 /*
+ * 1.front变量的含义做调整：front指向队列第一个元素，arr[front]就是队列第一个元素，初始值为0
+ * 2.rear变量含义：指向队列最后一个元素的后一个位置，因为希望空一个元素为约定，初始值为0
+ * 3.当队列满的时候，条件是（rear+1）%maxSize==front；满
+ * 4.当队列为空的时候，rear==front
+ * 5.队列有效数据个数为(rear+maxSize-front)%maxSize
+ * 6.这样可以得到环形队列
  *
- *使用一次就不能用了，没有达到复用的效果
- * 要改成一个环形的队列
+ *
+ *
  *
  *
  * */
-public class ArrayQueueDemo {
+public class QueueTest {
     public static void main(String[] args) {
-        ArrayQueue queues = new ArrayQueue(3);
+        System.out.println("测试环形队列");
+        CircleArray queues = new CircleArray(7);//声明最大长度为6
 
         char key = ' '; //接收用户输入
         Scanner scanner = new Scanner(System.in);
@@ -29,7 +36,7 @@ public class ArrayQueueDemo {
                     queues.show();
                     break;
                 case 'a':
-                    System.out.println("输出一个数");
+                    System.out.println("输入一个数");
                     int value = scanner.nextInt();
                     queues.addQueue(value);
                     break;
@@ -59,82 +66,78 @@ public class ArrayQueueDemo {
                 default:
                     break;
             }
-        }
+        }//
         System.out.println("程序退出成功");
 
     }
-}
+    }
 
-//使用数组模拟队列编写一个ArrayQueue类
-class ArrayQueue {
+
+
+
+class CircleArray {
     private int maxSize;//队列最大容量
     private int front;//队列头
     private int rear;//队列尾
     private int[] arr;
 
-    //创建队列的构造器
-    public ArrayQueue(int arrMaxSize) {
+    public CircleArray(int arrMaxSize) {
         maxSize = arrMaxSize;
         arr = new int[maxSize];
-        front = -1;//指向队列头部，分析front是指向队列头的前一个位置
-        rear = -1;//指向队列尾，指向队列尾的数据（即队列最后一个数据）
-
     }
 
-    //判断队列是否满
     public boolean isFull() {
-        return rear == maxSize - 1;
+        return (rear + 1) % maxSize == front;
     }
-
-    //判断队列是否为空
     public boolean isEmpty() {
         return rear == front;
     }
 
-    //添加数据到队列
     public void addQueue(int n) {
-        //判断队列是否满
         if (isFull()) {
             System.out.println("队列满，不能加入数据~");
-
+            return;
         }
-        rear++;
+        //加入数据
         arr[rear] = n;
+        //将rear后移
+        rear = (rear + 1) % maxSize;
+
     }
 
-    //获取队列数据，出队列
     public int getQueue() {
-        //判断队列是否为空
         if (isEmpty()) {
             //通过抛异常
             throw new RuntimeException("队列空，不能读取数据");
-
         }
-        front++;
-        return arr[front];
+        //将front保留给临时保留
+        //将front后移,考虑取模
+        //返回临时变量的值
+        int value = arr[front];
+        front = (front + 1) % maxSize;
+        return value;
 
     }
 
-    //显示队列所有数据
     public void show() {
-        //遍历
         if (isEmpty()) {
             System.out.println("队列为空");
             return;
         }
-
-        for (int i = 0; i < arr.length; i++) {
-            System.out.println("数据arr[" +i+"]"+arr[i]);
+        for (int i = front; i < front + size(); i++) {
+            System.out.printf("arr[%d]=%d\n", i % maxSize, arr[i % maxSize]);
         }
-    }
 
+        }
+
+    public int size() {
+        return (rear - front + maxSize) % maxSize;
+    }
     //显示队列的头数据，注意不是取出数据
     public int headQueue() {
-        //判断
         if (isEmpty()) {
-          throw new RuntimeException("队列为空，没有数据");
-
+            throw new RuntimeException("队列为空，没有数据");
         }
-        return arr[front + 1];
+        return arr[front];
     }
 }
