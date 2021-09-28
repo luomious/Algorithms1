@@ -20,15 +20,21 @@ public class Single_LinkedListDemo {
         //先创建节点
         HeroNode hero1 = new HeroNode(1, "砂浆", "及时雨");
         HeroNode hero2 = new HeroNode(2, "卢俊义", "玉麒麟");
-        HeroNode hero3 = new HeroNode(2, "无用", "无");
-        HeroNode hero4 = new HeroNode(2, "流程", "豹子头");
+        HeroNode hero3 = new HeroNode(3, "无用", "无");
+        HeroNode hero4 = new HeroNode(4, "流程", "豹子头");
         //创建链表、
         SingleLinkedList singleLinkedList = new SingleLinkedList();
         //加入
-        singleLinkedList.add(hero1);
-        singleLinkedList.add(hero2);
-        singleLinkedList.add(hero3);
-        singleLinkedList.add(hero4);
+//        singleLinkedList.add(hero1);
+//        singleLinkedList.add(hero2);
+//        singleLinkedList.add(hero3);
+//        singleLinkedList.add(hero4);
+
+        singleLinkedList.add2ByOrder(hero1);
+        singleLinkedList.add2ByOrder(hero4);
+        singleLinkedList.add2ByOrder(hero2);
+        singleLinkedList.add2ByOrder(hero3);
+        //显示
         //显示
         singleLinkedList.list();
     }
@@ -76,9 +82,40 @@ class SingleLinkedList {
             }
             //输出节点信息
             System.out.println(temp);
-            //将temp后移
+            //将temp后移c
             temp = temp.next;
         }
+    }
+
+    public void add2ByOrder(HeroNode heroNode) {
+//因为单链表中。temp是位于前一个节点，否则不能插入
+        HeroNode temp = head;
+        boolean flag = false;//标志添加编号是否存在，默认为false
+        while (true) {
+            if (temp.next == null) {//说明temp就在链表最后
+                break;
+            }
+            if (temp.next.no > heroNode.no) {//位置找到，就在temp的后面插入
+              break;
+
+            } else if (temp.next.no == heroNode.no) {//说明添加的编号已经存在
+                flag = true;//说明编号存在
+
+                break;
+
+            }
+            temp = temp.next;
+        }
+        //判断flag的值
+        if (flag) {//不能添加
+            System.out.println("准备插入的编号为已经存在，不能加入," + heroNode.no);
+
+        } else {
+            //插入到temp的后面
+            heroNode.next = temp.next;
+            temp.next = heroNode;
+        }
+
     }
 }
 
