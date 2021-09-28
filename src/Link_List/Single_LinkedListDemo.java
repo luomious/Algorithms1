@@ -16,7 +16,21 @@ import com.sun.source.tree.NewArrayTree;
  * */
 public class Single_LinkedListDemo {
     public static void main(String[] args) {
-
+            //测试
+        //先创建节点
+        HeroNode hero1 = new HeroNode(1, "砂浆", "及时雨");
+        HeroNode hero2 = new HeroNode(2, "卢俊义", "玉麒麟");
+        HeroNode hero3 = new HeroNode(2, "无用", "无");
+        HeroNode hero4 = new HeroNode(2, "流程", "豹子头");
+        //创建链表、
+        SingleLinkedList singleLinkedList = new SingleLinkedList();
+        //加入
+        singleLinkedList.add(hero1);
+        singleLinkedList.add(hero2);
+        singleLinkedList.add(hero3);
+        singleLinkedList.add(hero4);
+        //显示
+        singleLinkedList.list();
     }
 
 }
@@ -88,7 +102,6 @@ class HeroNode {
                 "no=" + no +
                 ", name='" + name + '\'' +
                 ", nickName='" + nickName + '\'' +
-                ", next=" + next +
                 '}';
     }
 }
