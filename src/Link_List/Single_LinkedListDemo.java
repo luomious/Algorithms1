@@ -44,6 +44,11 @@ public class Single_LinkedListDemo {
 
         //显示
         singleLinkedList.list();
+        System.out.println("*****************************************");
+        //删除一个节点
+        singleLinkedList.delete(1);
+        singleLinkedList.list();
+
     }
 
 }
@@ -154,6 +159,36 @@ class SingleLinkedList {
             //插入到temp的后面
             heroNode.next = temp.next;
             temp.next = heroNode;
+        }
+
+    }
+
+    //删除节点
+    //1.head不能动，需要找到指向前一个节点的temp
+    //2.
+    public void delete(int no) {
+        HeroNode temp = head;
+        boolean flag = false;
+        while (true) {
+
+        if (temp.next == null) {
+            break;//到链表的最后
+        }
+            if (temp.next.no == no) {
+                //找到了待删除节点的前一个节点temp
+                flag = true;
+                break;
+
+            }
+            temp = temp.next;//temp后移
+        }
+        //判断flag是否为真
+        if (flag) {
+            //可以删除
+            temp.next = temp.next.next;
+        } else {
+            System.out.printf("要删除的%d\n", no);
+
         }
 
     }
