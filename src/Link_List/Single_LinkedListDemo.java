@@ -177,7 +177,7 @@ class SingleLinkedList {
         //将链表的所有节点压人栈
         while (cur != null) {
             stack.push(cur);
-            cur = cur.next;//先进后出``
+            cur = cur.next;//先进后出
         }
         //将节点打印
         while (stack.size() > 0) {
