@@ -3,6 +3,7 @@ package Link_List;
 import com.sun.source.tree.NewArrayTree;
 
 import java.lang.module.FindException;
+import java.util.Stack;
 
 /*
  * 1.链表是一节点的方式存储
@@ -61,6 +62,9 @@ public class Single_LinkedListDemo {
         SingleLinkedList.reverseList(singleLinkedList.getHead());
 
        singleLinkedList.list();
+        System.out.println("测试逆序打印单链表");
+        singleLinkedList.reversePrint(singleLinkedList.getHead());
+
     }
 
 }
@@ -162,7 +166,26 @@ class SingleLinkedList {
         head.next = reverseHead.next;
     }
 
+    //使用方式2，实现逆序打印
+    public static void reversePrint(HeroNode head) {
+        if (head.next == null) {
+            return;
+        }
+        //创建一个栈，将各个节点压入栈
+        Stack<HeroNode> stack = new Stack<>();
+        HeroNode cur = head.next;
+        //将链表的所有节点压人栈
+        while (cur != null) {
+            stack.push(cur);
+            cur = cur.next;//先进后出``
+        }
+        //将节点打印
+        while (stack.size() > 0) {
+            System.out.println(stack.pop());//stack先进后出
+        }
 
+
+    }
 
 
 
