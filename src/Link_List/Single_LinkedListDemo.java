@@ -29,10 +29,10 @@ public class Single_LinkedListDemo {
         SingleLinkedList singleLinkedList = new SingleLinkedList();
         //加入
 //        singleLinkedList.add(hero1);
-//        singleLinkedList.add(hero2);
+////        singleLinkedList.add(hero2);
 //        singleLinkedList.add(hero3);
 //        singleLinkedList.add(hero4);
-//
+////
         singleLinkedList.add2ByOrder(hero1);
         singleLinkedList.add2ByOrder(hero4);
         singleLinkedList.add2ByOrder(hero2);
