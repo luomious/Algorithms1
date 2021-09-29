@@ -114,7 +114,7 @@ class SingleLinkedList {
             }
             //输出节点信息
             System.out.println(temp);
-            //将temp后移c
+            //将temp后移
             temp = temp.next;
         }
     }
