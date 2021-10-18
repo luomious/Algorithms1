@@ -1,5 +1,7 @@
 package Stack;
 
+import java.lang.invoke.SwitchPoint;
+import java.security.Key;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -14,13 +16,14 @@ public class PolandNotation {
     public static void main(String[] args) {
         //完成将一个中缀表达式转成后缀表达式
         //因为直接对字符串操作不方便，因此先将字符串的中缀表达式转成对应的List
-        String expression = "1+((2+3)x4)-5";
+        //即"1+((2+3)x4)-5"=>ArrayList[1,+,(,(,2,+,3,),*,4,),-,5]
+        String expression = "1+((2+3)*4)-5";
         List<String> infixExpressionList = toInfixExpressionList(expression);
-        System.out.println(infixExpressionList);
+        System.out.println("中缀表达式为"+infixExpressionList);
+
+        List<String> parseSuffixExpressionList = parseSuffiExpressionList(infixExpressionList);
+        System.out.println("后缀表达式对应List"+parseSuffixExpressionList);
         //将得到的中缀表达式的List转成后缀表达式
-
-
-
 
         //先定义逆波兰表达式,后缀表达式
         //（3+4）x 5-6，  3 4 + 5 x 6 -
@@ -85,8 +88,47 @@ public class PolandNotation {
         return Integer.parseInt(stack.pop());
     }
 
+public static  List<String > parseSuffiExpressionList(List<String> ls){
+        //定义两个栈
+    Stack<String> s1=new Stack<>();//符号栈
+    //说明：因为s2这个栈，在整个转换过程中没有pop操作，后面还需要逆序输出，所以使用List<String> s2
+//    Stack<String >s2=new Stack<>();//存储中间结果的栈s2
+    List<String >s2=new ArrayList<>();//存储中间结果的栈s2
 
+    //遍历ls
+    for (String item : ls) {
+        //如果是一个数，加入s2
+        if (item.matches("\\d+")) {
+            s2.add(item);
+        } else if (item.equals("(")) {
+            s1.push(item);
+
+        }  else if (item.equals(")")) {
+            //如果是右括号，则依次弹出s1栈顶的运算符，并压入s2，直到遇到左括号为止，并将括号丢弃
+            while (!s1.peek().equals("(")) {//peek()返回栈顶部元素
+                s2.add(s1.pop());
+            }
+            s1.pop();//将(弹出栈
+        } else {
+            //当item的优先级小于等于栈顶的运算符，将s1的栈顶运算符弹出并加入s2中，再次s1中新栈的栈顶比较
+            while (s1.size() != 0 && Operation.getValue(s1.peek()) >= Operation.getValue(item)) {
+                s2.add(s1.pop());
+            }
+            s1.push(item);
+        }
+    }
+
+        //将s1中剩余的运算符依次弹出并加入s2
+    while (s1.size() != 0) {
+        s2.add(s1.pop());
+    }
+    return s2;//存放到list中，因此按顺序输出就是波兰表达式
+
+
+
+}
     //将中缀表达式转成后缀表达式对应的List
+    //即"1+((2+3)x4)-5"==>ArrayList[1,+,(,(,2,+,3,),*,4,),-,5]
     public static List<String> toInfixExpressionList(String s) {//s为中缀表达式
         //定义一个List，存放中缀表达式对应的内容
         List<String> ls = new ArrayList<>();
@@ -112,3 +154,38 @@ public class PolandNotation {
         return ls;
     }
 }
+
+//编写一个类，Operation可以返回运算符的优先级
+class Operation{
+    private static int ADD=1;
+    private static int SUB=1;
+    private static int MUL=2;
+    private static int DIV=2;
+
+    //写一个方法，返回对应优先级数字
+    public static int getValue(String operation) {
+        int result=0;
+        switch (operation) {
+            case "+":
+                result=ADD;
+                break;
+            case "-":
+                result=SUB;
+                break;
+            case "*":
+                result=MUL;
+                break;
+            case "/":
+                result=DIV;
+                break;
+            default:
+                System.out.println("不存在该运算符");
+                break;
+        }
+        return result;
+    }
+
+
+
+}
+
