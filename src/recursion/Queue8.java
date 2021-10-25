@@ -8,6 +8,7 @@ public class Queue8 {
     int max = 8;
     int[] array = new int[max];
     static int count = 0;
+    static int judgeCount = 0;
 
     //定义一个数组array，保存皇后放置的结果，比如arr[8]={0,4,7,5,2,6,1,3}表示第几行，第几列
     public static void main(String[] args) {
@@ -15,6 +16,7 @@ public class Queue8 {
         Queue8 queue8 = new Queue8();
         queue8.check(0);
         System.out.println(count);//一共有92种解法
+        System.out.println("判断冲突的次数"+judgeCount);
 
     }
 
@@ -39,6 +41,7 @@ public class Queue8 {
     }
     //查看当我们放置第n个皇后的时候,就去检测该皇后是否和前面已经摆放的皇后是否冲突
     private boolean judge(int n) {//n表示第n个皇后
+        judgeCount++;
         for (int i = 0; i < n; i++) {
             //array[i] == array[n] ,表示判断第n个皇后是否和前面n-1个皇后在同一列
             // Math.abs(n-i)==Math.abs(array[n] - array[i]) ,表示判断n个皇后是否和第i个皇后是否在同一斜线
