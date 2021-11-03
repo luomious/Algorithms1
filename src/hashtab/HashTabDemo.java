@@ -15,6 +15,7 @@ public class HashTabDemo {
         while (true) {
             System.out.println("add:添加雇员");
             System.out.println("list:显示雇员");
+            System.out.println("find:查找雇员");
             System.out.println("exit:退出系统");
             key = scanner.next();
             switch (key) {
@@ -29,6 +30,11 @@ public class HashTabDemo {
                     break;
                 case "list":
                     hashTab.list();
+                    break;
+                case "find":
+                    System.out.println("输入id");
+                    int no = scanner.nextInt();
+                    hashTab.findEmpById(no);
                     break;
                 case "exit":
                     scanner.close();
@@ -75,7 +81,20 @@ class HashTab {
     //遍历hashtab
     public void list() {
         for (int i = 0; i < empLinkedListArray.length; i++) {
-            empLinkedListArray[i].list();
+            empLinkedListArray[i].list(i);
+        }
+    }
+
+    //根据输入的id查找雇员
+    public void findEmpById(int id) {
+        //使用散列函数确定到那条链表查找
+        int empLinkedKListNo = hashFun(id);
+        Emp emp = empLinkedListArray[empLinkedKListNo].findEmpById(id);
+        if (emp != null) {//找到
+            System.out.println("在第"+(empLinkedKListNo + 1)+"条链表找到 ");
+        } else {
+            System.out.println("没有找到该雇员");
+
         }
     }
 
@@ -123,18 +142,42 @@ class EmpLinkedList {
     //遍历链表雇员信息
     public void list(int no) {
         if (head == null) {//说明链表为空
-            System.out.println("第" + no + "链表为空");
+            System.out.println("第" + (no+1) + "链表为空");
             return;
         }
-        System.out.println("当前链表信息为");
+        System.out.print("第"+(no+1)+"当前链表信息为");
         Emp curEmpp = head;//辅助指针
         while (true) {
-            System.out.printf("=>id=%d name=%s\t",curEmpp.id,curEmpp.name);
-            if (curEmpp.name == null) {//说明curEmp已经到最后节点
+            System.out.printf(" =>id=%d name=%s\t",curEmpp.id,curEmpp.name);
+            if (curEmpp.next == null) {//说明curEmp已经到最后节点
                 break;
             }
             curEmpp = curEmpp.next;
         }
         System.out.println();
+    }
+
+    //根据id查找雇员
+    public Emp findEmpById(int id) {
+        //判断链表是否为空
+        if (head == null) {
+            System.out.println("链表为空");
+            return null;
+        }
+        //辅助指针
+        Emp curEmp = head;
+        while (true) {
+            if (curEmp.id == id) {
+                break;
+
+            }
+            if (curEmp.next == null) {
+                System.out.println("当前链表没有找到该雇员");
+                curEmp = null;
+                break;
+            }
+            curEmp = curEmp.next;
+        }
+        return curEmp;
     }
 }
