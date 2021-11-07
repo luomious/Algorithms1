@@ -3,6 +3,7 @@ package huffmanCode;
 import org.w3c.dom.NodeList;
 //p123
 
+import java.io.*;
 import java.util.*;
 
 //哈夫曼编码
@@ -16,10 +17,19 @@ public class HuffmanCode {
         System.out.println("压缩后的结果" + Arrays.toString(huffmanCodeBytes));
 
         //测试byteToBitString()方法
+        byte[] bytes = decode(huffmanCode, huffmanCodeBytes);
+        System.out.println(new String(bytes));
 
 
-
-
+        //测试压缩文件
+        String srcFile = "d://src.bmp";
+        String destFile = "d://src.zip";
+        zipFile(srcFile, destFile);
+        //测试解压文件
+        String srcFile2 = "d://src.zip";
+        String destFile2 = "d://src.bmp";
+        unZipFile(srcFile2, destFile2);
+        System.out.println("解压成功");
 
         //分布过程
 //        List<Node> nodes = getNodes(contentBytes);
@@ -40,20 +50,111 @@ public class HuffmanCode {
 
     }
 
+    //编写方法，完成对压缩文件的解压
+    public static void unZipFile(String zipFile, String destFile) {
+        //定义文件输入流
+        InputStream is = null;
+        //定义一个对象输入流
+        ObjectInputStream ois = null;
+        //定义文件的输出流
+        OutputStream os = null;
+
+
+        try {
+            //创建文件输入流
+            is = new FileInputStream(zipFile);
+            ois = new ObjectInputStream(is);
+            byte[] huffmanBytes = (byte[]) ois.readObject();
+            //读取哈夫曼编码表
+            Map<Byte, String> huffmanCodes = (Map<Byte, String>) ois.readObject();
+
+            //解码
+            byte[] bytes = decode(huffmanCodes, huffmanBytes);
+            //写入目标文件
+            os = new FileOutputStream(destFile);
+            os.write(bytes);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+
+            try {
+                os.close();
+                ois.close();
+                is.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    //编写方法，将一个文件进行压缩
+    //srcFile传入的希望压缩的文件路径,destFile将压缩文件放到哪个文件下
+    public static void zipFile(String srcFile, String destFile) {
+
+        //创建输出流
+        OutputStream os = null;
+        //创建文件的输入流
+        FileInputStream is = null;
+        ObjectOutputStream oos = null;
+        try {
+            is = new FileInputStream(srcFile);
+            //创建一个和源文件大小一样的byte[]
+            byte[] b = new byte[is.available()];
+            //读取文件
+            is.read(b);
+            //获取文件对应的哈夫曼编码表
+            byte[] huffmanZipBytes = huffmanZip(b);
+            //创建文件的输出流，存放压缩文件
+            os = new FileOutputStream(destFile);
+            //创建一个和文件输出流有关的ObjectOutputStream
+            oos = new ObjectOutputStream(os);
+            //把哈夫曼编码后的数组写入压缩文件
+            oos.writeObject(huffmanZipBytes);
+            //这里以对象流的方式写入哈夫曼编码，是为了以后恢复原文件时使用
+            //一定要把哈夫曼编码文件写入压缩文件
+            oos.writeObject(huffmanCode);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }finally {
+            try {
+                if (is == null) {
+                    is.close();
+                }
+                if (oos == null) {
+                    oos.close();
+                }
+                if (os == null) {
+                    os.close();
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+    }
+
     //完成数据的解压
     //思路
     //1.将huffmanCodeBytes[99, -12, 126, -113, -44, 89, -121, -89, 49, -6, 81, 12]转成二进制的字符串
     private static String byteToBitString(boolean flag, byte b) {
-        //flag表示是否需要补高位，true表示要补高位，
-        //这里没有考虑最后一位为负数的情况，需要改进,但是不确定
+        //flag表示是否需要补高位，true表示要补高位，flag表示最后一位是否为正数，正数则补位
+        //可能存在最后一个数据如000100，需要记录补几个0
 
         //使用变量保存b
         int temp = b;//把b转成int
 
         //如果是正数，需要补高位
-        if (flag) {
-            temp |= 256;//按为或运算
+        if (flag || temp <0) {
+            temp = b | 256; //按为或运算
         }
+
+
+
 
         String str = Integer.toBinaryString(temp);//返回二进制补码
         if (flag) {
@@ -73,13 +174,52 @@ public class HuffmanCode {
         StringBuilder stringBuilder = new StringBuilder();
         //将byte数组转成二进制的字符串
         for (int i = 0; i < huffmanBytes.length; i++) {
+            byte b = huffmanBytes[i];
             //判断是不是最后一个字节
             boolean flag = (i == huffmanBytes.length - 1);
-            StringBuilder.append(byteToBitString(!flag, b);)
+            stringBuilder.append(byteToBitString(!flag, b));
         }
         System.out.println(stringBuilder.toString());
-        return null;
+       //把字符串安装在指定的哈夫曼编码进行解码
+        //把哈夫曼编码进行调换,因为反向查询a->100 100->a
+        Map<String, Byte> map = new HashMap<>();
+        for (Map.Entry<Byte, String> entry : huffmanCodes.entrySet()) {
+            map.put(entry.getValue(), entry.getKey());
+        }
+
+        //创建集合，存放byte
+        List<Byte> list = new ArrayList<>();
+        for (int i = 0; i < stringBuilder.length();) {
+            int count = 1;
+            boolean flag = true;
+            Byte b = null;
+            while (flag) {
+                //递增取出"1"或"0"
+                String key = stringBuilder.substring(i, i + count);
+//                if (map.containsKey(key)) {
+//                    list.add(map.get(key));
+                b = map.get(key);
+                if (b == null) {
+                    count++;
+                } else {
+                    //匹配到
+                    flag = false;
+                }
+
+                }
+            list.add(b);
+            i += count;//让i直接移动到count
+            }
+        //当for循环结束后,list中存放原来的所有字符串
+        //把list中的数据放到btes[]并返回
+        byte[] b = new byte[list.size()];
+        for (int i = 0; i < b.length; i++) {
+            b[i] = list.get(i);
+        }
+        return b;
     }
+
+
 
 
     //使用一个方法将前面的方法封装起来，便于调用
