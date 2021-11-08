@@ -1,10 +1,10 @@
 package binarysorttree;
-//p130
+//p133
 //二叉排序树
 public class BinarySortTreeDemo {
     public static void main(String[] args) {
         int arr[] = {7, 3, 10, 12, 5, 1, 9, 0};
-        BinarySortTree1 binarySortTree = new BinarySortTree1();
+        BinarySortTree binarySortTree = new BinarySortTree();
         for (int i = 0; i < arr.length; i++) {
             binarySortTree.add(new Node(arr[i]));
         }
@@ -60,7 +60,7 @@ class BinarySortTree {
     }
     //删除结点的方法
     public void delNode(int value) {
-        if (this.root != null) {
+        if (root != null) {
             //1.查找要删除的结点
             Node targetNode = this.search(value);
             //如果没有找到
@@ -85,28 +85,36 @@ class BinarySortTree {
 
                     } else if (targetNode.left != null && targetNode.right != null) {//删除有两颗子树结点
                         int minVal = delRightTreeMin(targetNode.right);
-                        targetNode.value = minVal;
+                        targetNode.value = minVal;//注意这里只是改变结点值,所以遍历时可能出现两次
                     } else {//删除只有一个子树结点
                         //如果要删除的结点有左子结点
-                        if (targetNode.left != null) {
+                        if (targetNode.left != null && targetNode.right == null) {
+
                             //如果targetNode是parent的左子结点
                             if (parent != null) {
                                 if (parent.left.value == value) {
                                     parent.left = targetNode.left;
                                 } else {//targetNode是parent的右子结点
-                                    parent.right = targetNode.left;
+                                    if (parent.right.value == value) {
+                                        parent.right = targetNode.left;
+                                    }
+
                                 }
                             } else {
                                 this.root = targetNode.left;
-
                             }
 
-                        } else if (parent != null) {
-                            //如果要删除的结点有右子结点
-                            if (parent.left.value == value) {
-                                parent.left = targetNode.right;
-                            } else {//targetNode是parent的右子结点
-                                parent.right = targetNode.right;
+                        } else if (targetNode.right != null && targetNode.left == null) {
+
+                            if (parent != null) {
+                                if (parent.left.value == value) {
+                                    parent.left = targetNode.right;
+                                } else {//targetNode是parent的右子结点
+                                    parent.right = targetNode.right;
+                                }
+                            }
+                            else {
+                                this.root = targetNode.right;
                             }
                         }
                         }
