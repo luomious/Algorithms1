@@ -71,7 +71,7 @@ class BinarySortTree {
                 } else {
                     //找到targetNode的父结点
                     Node parent = this.searchParent(value);
-                    //如果删除的结点是叶子结点
+                    //1.如果删除的结点是叶子结点
                     if (targetNode.left == null && targetNode.right == null) {
                         if (parent != null) {
 
@@ -83,29 +83,29 @@ class BinarySortTree {
                             }
                         }
 
-                    } else if (targetNode.left != null && targetNode.right != null) {//删除有两颗子树结点
+                    } //2.删除有两颗子树结点
+                    else if (targetNode.left != null && targetNode.right != null) {
                         int minVal = delRightTreeMin(targetNode.right);
                         targetNode.value = minVal;//注意这里只是改变结点值,所以遍历时可能出现两次
-                    } else {//删除只有一个子树结点
+                    } else {//3.删除只有一个子树结点
                         //如果要删除的结点有左子结点
                         if (targetNode.left != null && targetNode.right == null) {
-
                             //如果targetNode是parent的左子结点
                             if (parent != null) {
                                 if (parent.left.value == value) {
                                     parent.left = targetNode.left;
-                                } else {//targetNode是parent的右子结点
+                                } else {
+                                    //targetNode是parent的右子结点
                                     if (parent.right.value == value) {
                                         parent.right = targetNode.left;
                                     }
-
                                 }
                             } else {
                                 this.root = targetNode.left;
                             }
-
-                        } else if (targetNode.right != null && targetNode.left == null) {
-
+                        }
+                        //如果要删除的结点有右子结点
+                        else if (targetNode.right != null && targetNode.left == null) {
                             if (parent != null) {
                                 if (parent.left.value == value) {
                                     parent.left = targetNode.right;
