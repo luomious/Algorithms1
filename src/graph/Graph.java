@@ -3,7 +3,7 @@ package graph;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
-
+//p153
 //图
 public class Graph {
     private ArrayList<String> vertexList;//存储顶点
@@ -14,8 +14,9 @@ public class Graph {
     private boolean[] isVisited ;
     public static void main(String[] args) {
         //测试
-        int n = 5;//结点个数
-        String Vertex[] = {"A", "B", "C", "D", "E"};
+        int n = 8;//结点个数
+//        String Vertex[] = {"A", "B", "C", "D", "E"};
+        String Vertex[] = {"1", "2", "3", "4", "5", "6", "7", "8"};
         //创建图对象
         Graph graph = new Graph(n);
         //循环添加顶点
@@ -24,16 +25,28 @@ public class Graph {
         }
         //添加边
         //AB,AC,BC,BD,BE
-        graph.insertEdge(0, 1, 1);//AB
+//        graph.insertEdge(0, 1, 1);//AB
+//        graph.insertEdge(0, 2, 1);
+//        graph.insertEdge(1, 2, 1);
+//        graph.insertEdge(1, 3, 1);
+//        graph.insertEdge(1, 4, 1);
+        graph.insertEdge(0, 1, 1);
         graph.insertEdge(0, 2, 1);
-        graph.insertEdge(1, 2, 1);
         graph.insertEdge(1, 3, 1);
         graph.insertEdge(1, 4, 1);
+        graph.insertEdge(3, 7, 1);
+        graph.insertEdge(4, 7, 1);
+        graph.insertEdge(2, 5, 1);
+        graph.insertEdge(2, 6, 1);
+        graph.insertEdge(5, 6, 1);
+
+
+
         //显示
         graph.showGraph();
         //测试dfs
         System.out.println("深度遍历");
-//        graph.dfs();
+        graph.dfs();
         System.out.println();
         System.out.println("广度优先");
         graph.bfs();
@@ -44,9 +57,9 @@ public class Graph {
     public Graph(int n) {
         //初始化矩阵和vertexList
         edges = new int[n][n];
-        vertexList = new ArrayList<>(n);
+        vertexList = new ArrayList<String>(n);
         numOfEdges = 0;
-        isVisited = new boolean[n];
+
     }
 
     //得到第一个邻接结点的下标v
@@ -62,7 +75,7 @@ public class Graph {
     //根据前一个邻接结点的下标获取下一个邻接结点
     public int getNextNeighbor(int v1, int v2) {
         for (int j = v2 + 1; j < vertexList.size(); j++) {
-            if (edges[v1][j] >1) {
+            if (edges[v1][j] >0) {
                 return j;
             }
         }
@@ -89,6 +102,7 @@ public class Graph {
 
     //对dfs进行重载,遍历所有结点进行dfs
     public void dfs() {
+        isVisited = new boolean[vertexList.size()];
         //遍历所有结点,进行dfs（回溯）
         for (int i = 0; i < getNumOfVertex(); i++) {
             if (!isVisited[i]) {
@@ -117,7 +131,7 @@ public class Graph {
             while (w != -1) {//说明找到
                 //判断是否访问过
                 if (!isVisited[w]) {
-                    System.out.println(getValueByIndex(w) + "=>");
+                    System.out.print(getValueByIndex(w) + "=>");
                     //标记已访问过
                     isVisited[w] = true;
                     //入队
@@ -132,7 +146,7 @@ public class Graph {
 
     //遍历所有的结点，都进行广度优先
     public void bfs() {
-        isVisited = new boolean[getNumOfVertex()];
+        isVisited = new boolean[vertexList.size()];
         for (int i = 0; i < getNumOfVertex(); i++) {
             if (!isVisited[i]) {
                 bfs(isVisited, i);
